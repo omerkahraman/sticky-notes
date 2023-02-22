@@ -1,24 +1,56 @@
-import logo from './logo.svg';
+import { useEffect, useRef, useState } from "react";
 import './App.css';
+import LeaveCommentText from "./components/LeaveCommentText";
+import MainContext from "./MainContext";
 
 function App() {
+
+  const screen = useRef();
+  const [mode, setMode] = useState(false);
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0
+  })
+
+  useEffect(() => {
+    screen.current.focus();
+  }, [])
+
+  const handleKeyUp = (e) => {
+    if(e.key === 'o') {
+      setMode(!mode)
+    }
+  }
+
+  const handleMouseMove = (e) => {
+    setPosition({
+      x: e.pageX,
+      y: e.pageY
+    })
+  }
+
+  const data = {
+     position
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <MainContext.Provider value={data} >
+
+    <div 
+      ref={screen} 
+      className={`screen ${mode && 'editable'}`} 
+      tabIndex={0} 
+      onKeyUp={handleKeyUp}
+      onMouseMove={handleMouseMove}
+      >
+      <img src="https://static5.depositphotos.com/1004330/397/i/600/depositphotos_3974070-stock-photo-turkey-map-and-flag.jpg" /> 
+      
+      {mode && <LeaveCommentText /> }
+
+      {mode && <div>Yorum modu aktif</div>}
     </div>
+
+    </MainContext.Provider>
   );
 }
 
